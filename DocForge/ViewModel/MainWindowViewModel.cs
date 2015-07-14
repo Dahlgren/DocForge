@@ -300,8 +300,9 @@ namespace DocForge.ViewModel
             if (this.FilteredModel == null || this.FilteredModel.Count == 0 || string.IsNullOrWhiteSpace(this.OutputPath)) return;
 
             var docGen = new HtmlGenerator();
+            var imgGen = new ImageGenerator(this.FolderPath, this.OutputPath, "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Arma 3 Tools\\ImageToPAA\\ImageToPAA.exe");
 
-            docGen.GenerateDocumentation(this.FilteredModel[0], this.OutputPath, this.ModelName, this.ModelVersion, this.ModelDescription, this.topLevelFilters, this.bottomLevelFilters, this.propertyFilters);
+            docGen.GenerateDocumentation(this.FilteredModel[0], imgGen, this.OutputPath, this.ModelName, this.ModelVersion, this.ModelDescription, this.topLevelFilters, this.bottomLevelFilters, this.propertyFilters);
         }
 
         /// <summary>

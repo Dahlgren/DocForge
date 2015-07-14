@@ -47,6 +47,11 @@ namespace DocForge.Helpers
         private const string tokenClassRemark = "[$classremark]";
 
         /// <summary>
+        /// The class image
+        /// </summary>
+        private const string tokenClassImage = "[$classimage]";
+
+        /// <summary>
         /// The properties table.
         /// </summary>
         private const string tokenPropertiesTable = "[$properties]";
@@ -117,6 +122,11 @@ namespace DocForge.Helpers
         private Model model;
 
         /// <summary>
+        /// The image generator.
+        /// </summary>
+        private ImageGenerator imageGenerator;
+
+        /// <summary>
         /// The project name.
         /// </summary>
         private string projectNameLiteral;
@@ -158,9 +168,10 @@ namespace DocForge.Helpers
         /// <param name="lowlevel">
         /// The lowlevel.
         /// </param>
-        public void GenerateDocumentation(Model m, string outputPath, string authorName, string modelVersion, string projectName, string[] toplevel, string[] midlevel, string[] lowlevel)
+        public void GenerateDocumentation(Model m, ImageGenerator imageGenerator, string outputPath, string authorName, string modelVersion, string projectName, string[] toplevel, string[] midlevel, string[] lowlevel)
         {
             this.model = m;
+            this.imageGenerator = imageGenerator;
             this.projectNameLiteral = projectName;
             this.modelVersionLiteral = modelVersion;
             this.authorNameLiteral = authorName;
@@ -272,6 +283,7 @@ namespace DocForge.Helpers
             template = template.Replace(tokenClassInherits, c.InheritanceClass == null ? c.Inherits : c.InheritanceClass.HtmlLinkToPage());
             template = template.Replace(tokenClassParent, c.ContainmentParent == null ? string.Empty : c.ContainmentBreadcrumb());
             template = template.Replace(tokenClassRemark, c.Remark);
+            template = template.Replace(tokenClassImage, this.GenerateImage(c));
             template = template.Replace(tokenPropertiesTable, this.GeneratePropertiesTable(c));
             template = template.Replace(tokenClassTable, this.GenerateContainedClassesTable(c));
             template = template.Replace(tokenClassInheritanceTable, this.GenerateInheritanceClassesTable(c));
@@ -288,6 +300,31 @@ namespace DocForge.Helpers
                 this.GenerateClassPage(cc, outputPath);
             }
         }
+
+        private string GenerateImage(Class c)
+        {
+            var image = "";
+
+            if (this.imageGenerator == null) return image;
+
+            foreach (var property in c.Properties)
+            {
+                if (property.Name.ToLower() == "picture")
+                {
+                    var imagePath = this.imageGenerator.Image(property.Value.Replace("\"", ""));
+
+                    image = "<img src='" + imagePath + "' />";
+                }
+            }
+
+            if (image == "" && c.InheritanceClass != null)
+            {
+                return this.GenerateImage(c.InheritanceClass);
+            }
+
+            return image;
+        }
+
 
         /// <summary>
         /// Generate table of contents
