@@ -178,7 +178,7 @@ namespace System
 
             nodes.Add(string.Format(@"[{{ v: '{0}', f: '{1}' }}, '{2}', '{3}']", name, name, string.Empty, name));
 
-            foreach (var c in m.Classes)
+            foreach (var c in m.Classes.OrderBy(o => o.Name).ToList())
             {
                 nodes.Add(string.Format(@"[{{ v: '{0}', f: '{1}' }}, '{2}', '{3}']", c.Name, c.HtmlLinkToPage(), name, c.Name));
             }
@@ -213,7 +213,7 @@ namespace System
                 nodes.Add(string.Format(@"[{{ v: '{0}', f: '{1}' }}, '{2}', '{3}']", cx.Name, cx.Name, string.Empty, cx.Name));
             }
 
-            foreach (var c in cx.InheritanceChildren)
+            foreach (var c in cx.InheritanceChildren.OrderBy(o => o.Name).ToList())
             {
                 nodes.Add(string.Format(@"[{{ v: '{0}', f: '{1}' }}, '{2}', '{3}']", c.Name, c.HtmlLinkToPage(), cx.Name, c.Name));
             }
@@ -252,7 +252,7 @@ namespace System
                 if (cl.InheritanceChildren.Count != 0)
                 {
                     thisClass.children = new List<PlainClass>();
-                    foreach (var child in cl.InheritanceChildren)
+                    foreach (var child in cl.InheritanceChildren.OrderBy(o => o.Name).ToList())
                     {
                         thisClass.children.Add(new PlainClass() { name = child.Name });
                     } 
@@ -271,7 +271,7 @@ namespace System
                 if (cl.InheritanceChildren.Count != 0)
                 {
                     root.children = new List<PlainClass>();
-                    foreach (var child in cl.InheritanceChildren)
+                    foreach (var child in cl.InheritanceChildren.OrderBy(o => o.Name).ToList())
                     {
                         root.children.Add(new PlainClass() {name = child.Name});
                     }

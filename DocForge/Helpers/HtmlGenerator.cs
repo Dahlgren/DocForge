@@ -310,7 +310,7 @@ namespace DocForge.Helpers
             sb.AppendLine(string.Format("<h5>Version: {0}</h5>", this.modelVersionLiteral));
             sb.AppendLine("<ul class=\"nav nav-pills nav-stacked\">");
 
-            foreach (var modelClass in this.model.Classes)
+            foreach (var modelClass in this.model.Classes.OrderBy(o => o.Name).ToList())
             {
                 if (modelClass != containers.First())
                 {
@@ -345,7 +345,7 @@ namespace DocForge.Helpers
 
             if (containers.Count == 1)
             {
-                foreach (var c in modelClass.Classes)
+                foreach (var c in modelClass.Classes.OrderBy(o => o.Name).ToList())
                 {
                     sb.AppendLine(string.Format("<li>{0}</li>", c.HtmlLinkToPage()));
                 }
@@ -356,7 +356,7 @@ namespace DocForge.Helpers
                 if (i == containers.Count - 1)
                 {
                     sb.AppendLine(string.Format("<li>{0}<ul class=\"nav nav-pills nav-stacked\">", containers[i].HtmlLinkToPageFocused()));
-                    foreach (var c in containers[i].Classes)
+                    foreach (var c in containers[i].Classes.OrderBy(o => o.Name).ToList())
                     {
                         sb.AppendLine(string.Format("<li>{0}</li>", c.HtmlLinkToPage()));
                     }
@@ -397,7 +397,7 @@ namespace DocForge.Helpers
                     sb.AppendLine("</tr>");
                 sb.AppendLine("</thead>");
             sb.AppendLine("<tbody>");
-            foreach (var property in c.Properties)
+            foreach (var property in c.Properties.OrderBy(o => o.Name).ToList())
             {
                 sb.AppendLine("<tr>");
                 sb.AppendLine(string.Format("<td>{0}</td>", property.Name));
@@ -434,7 +434,7 @@ namespace DocForge.Helpers
             sb.AppendLine("</thead>");
             sb.AppendLine("<tbody>");
 
-            foreach (var property in c.Classes)
+            foreach (var property in c.Classes.OrderBy(o => o.Name).ToList())
             {
                 sb.AppendLine("<tr>");
                 sb.AppendLine(string.Format("<td>{0}</td>", property.HtmlLinkToPage()));
@@ -447,7 +447,7 @@ namespace DocForge.Helpers
 
             sb.AppendLine("<h5>Simple List</h5>");
 
-            sb.AppendLine(string.Format("<pre>{0}</pre>", string.Join(",", c.Classes.Select(cl => string.Format("\"{0}\"", cl.Name)))));
+            sb.AppendLine(string.Format("<pre>{0}</pre>", string.Join(",", c.Classes.OrderBy(o => o.Name).ToList().Select(cl => string.Format("\"{0}\"", cl.Name)))));
 
             return sb.ToString();
         }
@@ -474,7 +474,7 @@ namespace DocForge.Helpers
             sb.AppendLine("</thead>");
             sb.AppendLine("<tbody>");
 
-            foreach (var property in c.InheritanceChildren)
+            foreach (var property in c.InheritanceChildren.OrderBy(o => o.Name).ToList())
             {
                 sb.AppendLine("<tr>");
                 sb.AppendLine(string.Format("<td>{0}</td>", property.HtmlLinkToPage()));
@@ -487,7 +487,7 @@ namespace DocForge.Helpers
 
             sb.AppendLine("<h5>Simple List</h5>");
 
-            sb.AppendLine(string.Format("<pre>{0}</pre>", string.Join(",", c.InheritanceChildren.Select(cl => string.Format("\"{0}\"", cl.Name)))));
+            sb.AppendLine(string.Format("<pre>{0}</pre>", string.Join(",", c.InheritanceChildren.OrderBy(o => o.Name).ToList().Select(cl => string.Format("\"{0}\"", cl.Name)))));
 
             return sb.ToString();
         }
