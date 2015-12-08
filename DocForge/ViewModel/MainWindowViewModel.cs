@@ -324,15 +324,35 @@ namespace DocForge.ViewModel
                 this.topLevelFilters[index] = topLevelFilter.Trim();
             }
 
+            HashSet<string> topFilter = new HashSet<string>(this.topLevelFilters.Select(s => s.ToLowerInvariant()).ToArray());
+            var map = new Dictionary<String, Class>();
+
+            foreach (string key in this.topLevelFilters)
+            {
+                map.Add(key.ToLowerInvariant(), new Class
+                {
+                    Name = key
+                });
+            }
+
             if (this.FullModel.Count != 0)
             {
                 var fModel = new Model { Name = this.FullModel[0].Name };
+                
                 foreach (var cl in this.FullModel[0].Classes)
                 {
-                    if (this.topLevelFilters.Contains(cl.Name))
+                    if (topFilter.Contains(cl.Name.ToLowerInvariant()))
                     {
-                        fModel.Classes.Add(cl.Copy());
+                        foreach (var klass in cl.Classes)
+                        {
+                            map[cl.Name.ToLowerInvariant()].Classes.Add(klass);
+                        }
                     }
+                }
+
+                foreach (var klass in map.Values)
+                {
+                    fModel.Classes.Add(klass.Copy());
                 }
 
                 foreach (Class t in fModel.Classes)
